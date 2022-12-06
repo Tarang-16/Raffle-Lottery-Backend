@@ -39,7 +39,13 @@ module.exports = {
             goerli: ETHERSCAN_API_KEY,
         },
     },
-
+    gasReporter: {
+        enabled: false,
+        currency: "USD",
+        outputFile: "gas-report.txt",
+        noColors: true,
+        // coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    },
     solidity: "0.8.7",
     mocha: {
         timeout: 500000,
