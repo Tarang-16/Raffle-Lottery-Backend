@@ -30,7 +30,8 @@ const { developmentChains } = require("../../helper-hardhat-config")
 
           describe("enterRaffle", function () {
               it("reverts when you don't pay enough", async function () {
-                  await expect(raffle.enterRaffle()).to.be.revertedWith(
+                  await expect(raffle.enterRaffle()).to.be.revertedWithCustomError(
+                      raffle,
                       "Raffle__NotEnoughETHEntered"
                   )
               })
@@ -54,9 +55,9 @@ const { developmentChains } = require("../../helper-hardhat-config")
                   await network.provider.send("evm_mine", [])
                   //We pretend to be a chainlink keeper
                   await raffle.performUpkeep([])
-                  await expect(raffle.enterRaffle({ value: raffleEntranceFee })).to.be.revertedWith(
-                      "Raffle__NOTOPEN"
-                  )
+                  await expect(
+                      raffle.enterRaffle({ value: raffleEntranceFee })
+                  ).to.be.revertedWithCustomError(raffle, "Raffle__NOTOPEN")
               })
           })
 
@@ -105,10 +106,10 @@ const { developmentChains } = require("../../helper-hardhat-config")
               })
 
               it("reverts when checkUpkeep is false", async function () {
-                await expect(raffle.performUpkeep([])).to.be.revertedWithCustomError(
-                    raffle,
-                    Raffle__UpkeepNotNeeded()
-                )
+                  await expect(raffle.performUpkeep([])).to.be.revertedWithCustomError(
+                      raffle,
+                      "Raffle__UpkeepNotNeeded"
+                  )
               })
 
               it("updates the raffle state, emits and event, and calls the vrf coordinator", async function () {
